@@ -2,7 +2,7 @@
 CC = gcc
 
 CFLAGS = -std=c11 -g -Wall
-CFLAGS += -Isrc/server
+CFLAGS += -Isrc/server -Isrc/util
 LDFLAGS = -g
 OUT=mtwwd
 
