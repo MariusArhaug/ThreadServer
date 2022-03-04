@@ -52,3 +52,9 @@ Mkfile.old
 dkms.conf
 
 .vscode/*.log
+
+#Env file
+.env
+
+#Output files
+/bin/*

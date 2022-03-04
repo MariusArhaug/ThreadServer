@@ -9,7 +9,7 @@
       "cppStandard": "gnu++14",
       "intelliSenseMode": "linux-gcc-x64",
       "configurationProvider": "ms-vscode.makefile-tools",
-      "compilerArgs": ["-Isrc/server"]
+      "compilerArgs": ["-Isrc/server", "-Isrc/util"]
     }
   ],
   "version": 4
