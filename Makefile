@@ -2,8 +2,9 @@
 CC = gcc
 
 CFLAGS = -std=c11 -g -Wall
-CFLAGS += -Isrc/server -Isrc/util
+CFLAGS += -Isrc/server -Isrc/util -Isrc/router -Isrc/types
 LDFLAGS = -g
+
 OUT=mtwwd
 
 
