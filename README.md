@@ -14,8 +14,12 @@ This web server was created as a part of the exercises in the course `TDT4186 Op
 
 ### Installing
 
-- `git clone url`
-- `cd MultithreadedWebServer`
+```
+$ git clone git@github.com:MariusArhaug/MultithreadedWebServer.git
+```
+```
+cd MultithreadedWebServer
+```
 
 ### Executing program
 
