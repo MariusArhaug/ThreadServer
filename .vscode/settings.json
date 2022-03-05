@@ -8,6 +8,11 @@
     "unistd.h": "c",
     "stdio.h": "c",
     "env.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "inet.h": "c",
+    "router.h": "c",
+    "string.h": "c",
+    "fcntl.h": "c",
+    "file.h": "c"
   }
 }
