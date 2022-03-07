@@ -2,19 +2,13 @@
   "configurations": [
     {
       "name": "Linux",
-      "includePath": ["${workspaceFolder}/src"],
+      "includePath": ["${workspaceFolder}/**"],
       "defines": [],
       "compilerPath": "/usr/bin/gcc",
-      "cStandard": "c99",
+      "cStandard": "c11",
       "cppStandard": "gnu++14",
       "intelliSenseMode": "linux-gcc-x64",
-      "configurationProvider": "ms-vscode.makefile-tools",
-      "compilerArgs": [
-        "-Isrc/server",
-        "-Isrc/util",
-        "-Isrc/router",
-        "-Isrc/types"
-      ]
+      "compilerArgs": ["-Isrc/"]
     }
   ],
   "version": 4

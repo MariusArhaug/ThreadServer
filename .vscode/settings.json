@@ -1,5 +1,4 @@
 {
-  "makefile.extensionOutputFolder": "./.vscode",
   "files.associations": {
     "*.sql": "sql",
     "netdb.h": "c",
@@ -13,6 +12,20 @@
     "router.h": "c",
     "string.h": "c",
     "fcntl.h": "c",
-    "file.h": "c"
+    "file.h": "c",
+    "socket.h": "c",
+    "response.h": "c",
+    "cstdio": "c",
+    "state.h": "c",
+    "*.tcc": "c",
+    "optional": "c",
+    "functional": "c",
+    "random": "c",
+    "fstream": "c",
+    "istream": "c",
+    "ostream": "c",
+    "sstream": "c",
+    "streambuf": "c",
+    "time.h": "c"
   }
 }
