@@ -12,9 +12,9 @@
 #define NUM_ARGS(...)\
   (int) ((sizeof((char*[HTTP_METHOD_LENGTH]) {0, ##__VA_ARGS__}))/(sizeof(char*[HTTP_METHOD_LENGTH])) - 1)
 
-#define ROUTE(_endpoint, _route, _method, ...)\
-  if (\
-    strncmp(_endpoint, _route, strlen(_endpoint)) == 0 &&\
+#define ROUTE(_endpoint, _route, _method, ...)                    \
+  if (                                                            \
+    strncmp(_endpoint, _route, strlen(_endpoint)) == 0 &&         \
     allow_methods(_method, (NUM_ARGS(__VA_ARGS__)), ##__VA_ARGS__)\
   ) 
     
