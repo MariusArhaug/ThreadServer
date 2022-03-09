@@ -1,10 +1,15 @@
-# Multi Threaded Web Server
+# ThreadServer
 
-A multi threaded web server created using C.
+A multi threaded web server, serving HTTP 1.1 on *n* threads using web sockets. Developed using C and only standard libraries. 
+
 
 ## Description
 
-This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.
+This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.'
+
+It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities. 
+
+
 
 ## Getting Started
 
