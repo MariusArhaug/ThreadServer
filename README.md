@@ -1,15 +1,12 @@
 # ThreadServer
 
-A multi threaded web server, serving HTTP 1.1 on *n* threads using web sockets. Developed using C and only standard libraries. 
-
+A multi threaded web server, serving HTTP 1.1 on _n_ threads using web sockets. Developed using C and only standard libraries.
 
 ## Description
 
 This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.'
 
-It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities. 
-
-
+It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities.
 
 ## Getting Started
 
@@ -20,11 +17,26 @@ It supports both JSON and HTML response headers and is able to server multiple i
 ### Installing
 
 ```
-$ git clone git@github.com:MariusArhaug/MultithreadedWebServer.git
+$ git clone git@github.com:MariusArhaug/ThreadServer.git
 ```
+
 ```
 cd MultithreadedWebServer
 ```
+
+#### Environment variables
+
+To set up environment variables, you need to create a `.env` file in the root directory. Its contents should be like this:
+
+```bash
+PORT=<port>
+WEB_PATH=<path to where the webserver should reside>
+N_THREADS=<number of threads>
+N_BUFFS=<number of buffers>
+
+```
+
+> Note that there should be no space between the equal sign (neither before nor after).
 
 ### Executing program
 
@@ -40,4 +52,4 @@ $ make
 $ make run
 ```
 
-> compiles as before but also runs the binary.
+> compiles as before but also runs the binary with the environment variables defined earler, if these are not defined this rule will not work.
