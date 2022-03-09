@@ -5,6 +5,7 @@
 #include "types/error.h"
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -29,10 +30,26 @@ static inline int accept_conn(struct server_t* self) {
       &clilen );
 }
 
-static inline int bind_sock(struct server_t* self) {
-  return bind(
-     self->sockfd, (struct sockaddr*) &self->serv_addr, sizeof(self->serv_addr)
-  );
+static inline void bind_sock(struct server_t* self) {
+  if (
+    bind(
+     self->sockfd, 
+     (struct sockaddr*) &self->serv_addr, 
+     sizeof(self->serv_addr)
+    ) == -1
+  ) PERROR("Bind error");
+}
+
+static inline void check_read(int rcvd) {
+  if (rcvd < 0) 
+    ERROR("recv() error");
+  if (rcvd==0) 
+    ERROR("Client disconnected unexpectedly.");
+}
+
+static inline void check_conn(int connfd) {
+  if (connfd < 0)
+    ERROR("Error reading from socket");
 }
 
 void server_init(struct server_t* self, int n_threads, int n_buff) {
@@ -46,29 +63,23 @@ void server_init(struct server_t* self, int n_threads, int n_buff) {
   self->serv_addr.sin_port = htons(state.port);
   self->connection_size = CONNECTION_SIZE;
 
-  while (1) {
-    if(bind_sock(self) == 0)   
-      break;
-    self->serv_addr.sin_port = htons(++state.port);
-  }
+  bind_sock(self);
 }
 
 void server_start(struct server_t* self) {
   listen(self->sockfd, self->connection_size);
-  printf("Server listening on port: %d \n", PORT);
+  printf("Server listening on port: %d \n", state.port);
   char readBuff[MAXREQ];
-  while(1) {
-    int connfd = accept_conn(self);
-    if (connfd < 0)
-      ERROR("Error reading from socket");
+
+  while(true) {
+    int connfd;
+    
+    check_conn((connfd = accept_conn(self))); 
     
     memset(readBuff, 0, MAXREQ);
-    int rcvd = read(connfd, readBuff, sizeof(readBuff)-1);
-    if (rcvd < 0) 
-      ERROR("recv() error");
-    if (rcvd==0) 
-      ERROR("Client disconnected unexpectedly.");
 
+    check_read(read(connfd, readBuff, sizeof(readBuff)-1));
+    
     handle_request(readBuff, connfd);
 
     close(connfd);
