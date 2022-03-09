@@ -1,3 +1,4 @@
+#include "state.h"
 #include "router.h"
 #include "http-types.h"
 #include "types/response.h"
@@ -58,8 +59,13 @@ void not_found_handler(int connfd, char* route) {
 
 void doc_handler(int connfd, char* route) {
   FILE* fp;
-  if (read_doc_file(&fp, route) == -1) 
-    return not_found_handler(connfd, route);
+
+  char cwd[FILENAME_MAX]; 
+  strcpy(cwd, state.wd);
+  strcpy(cwd, route);
+  
+  if (read_file(&fp, route) == -1) 
+    return not_found_handler(connfd, cwd);
 
   response_t* resp = response_init();
 

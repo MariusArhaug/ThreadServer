@@ -9,21 +9,13 @@
 
 #define READ "r"
 
-int read_doc_file(FILE** fp, char* path) {
-  char cwd[FILENAME_MAX];
-  if (state.wd != NULL) 
-    strcpy(cwd, state.wd);
-  else 
-    getcwd(cwd, FILENAME_MAX);
-
-  strcat(cwd, path);
-
-  if( access( cwd, F_OK ) != 0 ) 
+int read_file(FILE** fp, char* path) {
+  if( access( path, F_OK ) != 0 ) 
     return -1; 
 
-  (*fp) = fopen(cwd, READ);
+  (*fp) = fopen(path, READ);
   
-  return 1;
+  return 0;
 }
 
 char* file_to_str(FILE* fp) {
