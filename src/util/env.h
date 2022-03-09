@@ -1,6 +1,6 @@
 #ifndef ENV_H
 #define ENV_H
 
-const char* getEnvVar(char*);
+char* get_envv(char*);
 
 #endif
