@@ -12,36 +12,41 @@
 #define NUM_ARGS(...)\
   (int) ((sizeof((char*[HTTP_METHOD_LENGTH]) {0, ##__VA_ARGS__}))/(sizeof(char*[HTTP_METHOD_LENGTH])) - 1)
 
-#define ROUTE(_endpoint, _route, _method, ...)                    \
+#define ROUTE(_endpoint, _route, _method, _handler, ...)                    \
   if (                                                            \
     strncmp(_endpoint, _route, strlen(_endpoint)) == 0 &&         \
     allow_methods(_method, (NUM_ARGS(__VA_ARGS__)), ##__VA_ARGS__)\
-  ) 
+  ) {\
+    _handler(connfd, _route);\
+  }
     
 
-static void not_found_handler(int connfd);
+static void not_found_handler(int connfd, char* route);
 static void doc_handler(int connfd, char* route);
 
 
 void handle_route(int connfd, char* method, char* route) {
-  
-  ROUTE("/doc/", route, method, "GET", "PATCH") 
-    doc_handler(connfd, route);
-  
-  ROUTE("/", route, method, "GET")
-    not_found_handler(connfd);
-
-  
+  ROUTE("/doc/write/", route, method, not_found_handler, "POST")
+  ROUTE("/doc/", route, method, doc_handler, "GET")
+  ROUTE("/", route, method, not_found_handler, "GET")
 }
 
-#define NOT_FOUND_BODY "{\"error\": \"endpoint not found\"}"
+#define ERROR_BODY (\
+  "{\n"\
+    "\t\"error\": {\n"\
+    "\t\t\"code\": %d,\n"\
+    "\t\"message\": \"endpoint '%s' not found\""\
+    "\t}\n"\
+  "}")
 
-void not_found_handler(int connfd) {
+void not_found_handler(int connfd, char* route) {
   
   response_t* resp = response_init();
   
-  set_response_header(resp, NOT_FOUND);
-  set_body(resp, NOT_FOUND_BODY);
+  set_response_header(resp, NOT_FOUND_S);
+  char body[1024];
+  sprintf(body, ERROR_BODY, NOT_FOUND_C, route);
+  set_body(resp, body);
 
   char* resp_str = response_to_str(resp);
   
@@ -52,15 +57,14 @@ void not_found_handler(int connfd) {
 }
 
 void doc_handler(int connfd, char* route) {
- 
   FILE* fp;
   if (read_doc_file(&fp, route) == -1) 
-    return not_found_handler(connfd);
+    return not_found_handler(connfd, route);
 
   response_t* resp = response_init();
 
   char* body = file_to_str(fp);
-  set_response_header(resp, OK);
+  set_response_header(resp, OK_S);
   set_body(resp, body);
 
   char* resp_str = response_to_str(resp);
