@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
 
+#define READ "r"
 
 int read_doc_file(FILE** fp, char* path) {
   char cwd[FILENAME_MAX];
@@ -21,7 +21,7 @@ int read_doc_file(FILE** fp, char* path) {
   if( access( cwd, F_OK ) != 0 ) 
     return -1; 
 
-  (*fp) = fopen( cwd, O_RDONLY );
+  (*fp) = fopen(cwd, READ);
   
   return 1;
 }
