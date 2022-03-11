@@ -4,7 +4,7 @@ A multi threaded web server, serving HTTP 1.1 on _n_ threads using web sockets. 
 
 ## Description
 
-This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.'
+This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.
 
 It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities.
 
@@ -21,7 +21,7 @@ $ git clone git@github.com:MariusArhaug/ThreadServer.git
 ```
 
 ```
-cd MultithreadedWebServer
+$ cd ThreadServer
 ```
 
 #### Environment variables
@@ -42,6 +42,8 @@ N_BUFFS=<number of buffers>
 
 ### Executing program
 
+#### Execute yourself without .env variables
+
 Make sure you have `GCC` and `Make` installed on your system and run the following commands
 
 ```
@@ -49,6 +51,14 @@ $ make
 ```
 
 > compiles the program into an output file in /bin
+
+```
+$ ./bin/mtwwd [www-path] [port] [#threads] [#bufferslots]
+```
+> Run from binary folder with desired arguments, will not run unless all four have been selected
+
+
+##### Or run from makefile with .env variables
 
 ```
 $ make run
