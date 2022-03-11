@@ -14,7 +14,9 @@ PORT = $(shell grep "PORT" $(ENV) | cut -d '=' -f2)
 N_THREADS = $(shell grep "N_THREADS" $(ENV) | cut -d '=' -f2)
 N_BUFFS = $(shell grep "N_BUFFS" $(ENV) | cut -d '=' -f2)
 
-SRC = $(wildcard src/*.c) $(wildcard src/**/*.c)
+#ARGV = $(shell ./scripts/getenv.sh 2>&1) 
+
+SRC = $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard src/**/**/*.c)
 OBJ = $(SRC:.c=.o)
 
 SRC_TEST = $(filter-out src/main.c, $(SRC)) 
@@ -32,6 +34,9 @@ dirs:
 
 run: all
 	$(BIN)/$(OUT) $(WEB_PATH) $(PORT) $(N_THREADS) $(N_BUFFS)
+
+# run: all
+# 	$(BIN)/$(OUT) $(ARGV)
 
 test:	compile-test
 	$(BIN)/test
