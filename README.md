@@ -28,6 +28,8 @@ cd MultithreadedWebServer
 
 To set up environment variables, you need to create a `.env` file in the root directory. Its contents should be like this:
 
+Note: **Key name cannot change, only value**
+
 ```bash
 PORT=<port>
 WEB_PATH=<path to where the webserver should reside>
@@ -52,4 +54,4 @@ $ make
 $ make run
 ```
 
-> compiles as before but also runs the binary with the environment variables defined earler, if these are not defined this rule will not work.
+> compiles as before but also runs the binary with the environment variables defined earlier, if these are not defined this rule will not work.
