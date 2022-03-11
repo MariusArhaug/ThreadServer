@@ -51,6 +51,11 @@ $ make
 > compiles the program into an output file in /bin
 
 ```
+./bin/mtwwd [www-path] [port] [#threads] [#bufferslots]
+```
+> Run from binary folder with desired arguments, will not run unless all four have been selected
+
+```
 $ make run
 ```
 
