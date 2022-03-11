@@ -45,7 +45,8 @@ void not_found_handler(int connfd, char* route) {
   
   response_t* resp = response_init();
   
-  set_response_header(resp, NOT_FOUND_S);
+  set_response_status(resp, NOT_FOUND_S);
+  set_response_content(resp, JSON_CONTENT);
   char body[1024];
   sprintf(body, ERROR_BODY, NOT_FOUND_C, route);
   set_body(resp, body);
@@ -63,15 +64,17 @@ void doc_handler(int connfd, char* route) {
 
   char cwd[FILENAME_MAX]; 
   strcpy(cwd, state.wd);
-  strcpy(cwd, route);
+  strcat(cwd, route);
   
-  if (read_file(&fp, route) == -1) 
-    return not_found_handler(connfd, cwd);
+  if (read_file(&fp, cwd) == -1) 
+    return not_found_handler(connfd, route);
 
   response_t* resp = response_init();
 
   char* body = file_to_str(fp);
-  set_response_header(resp, OK_S);
+  set_response_status(resp, OK_S);
+  set_response_content(resp, HTML_CONTENT);
+
   set_body(resp, body);
 
   char* resp_str = response_to_str(resp);

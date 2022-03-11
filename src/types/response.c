@@ -5,10 +5,6 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-
-#define CONTENT_TYPE  "Content-Type"
-#define JSON_CONTENT  "application/json"
-#define ALLOW_ORIGIN "Access-Control-Allow-Origin: *"
 #define T_SIZE 1024
 #define RFC2616 "%a, %d %b %Y %T GMT"
 #define MAXREQ (4096*1024)
@@ -63,7 +59,7 @@ response_t* response_init() {
   memset(self->header, 0, sizeof(response_h_t));
   self->header->method = "HTTP/1.1";
   self->header->accept_range = "Accept-ranges: bytes";
-  self->header->content_type = "Content-Type: application/json; charset=utf-8";
+  self->header->content_type = "Content-Type: ";
   self->header->connection = "Connection: keep-alive";
   return self;
 }
@@ -73,8 +69,12 @@ void set_request_header(struct response_t* self, char* method, char* uri) {
   self->header->uri = uri;
 }
 
-void set_response_header(struct response_t* self, char* status) {
+void set_response_status(struct response_t* self, char* status) {
   self->header->status = status;
+}
+
+void set_response_content(struct response_t* self, char* content) {
+  self->header->content_type = content;
 }
 
 void set_body(struct response_t* self, char* body) {
