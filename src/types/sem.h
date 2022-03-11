@@ -1,6 +1,7 @@
 #ifndef SEM_H
 #define SEM_H
 
+#include <inttypes.h>
 /*
  * Semaphore implementation for the synchronization of POSIX threads.
  *
@@ -29,7 +30,7 @@ typedef struct SEM SEM;
  * handle for the created semaphore, or NULL if an error occured.
  */
 
-SEM *sem_init(int initVal);
+SEM *sem_init(uint32_t initVal);
 
 /* Destroys a semaphore and frees all associated resources.
  *
