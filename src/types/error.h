@@ -10,7 +10,7 @@
 } while(0)
 
 #define ERROR(_msg, ...) do {                   \
-  fprintf(stderr, _msg "\n", ##__VA_ARGS__);\
+  fprintf(stderr, _msg "\n", ##__VA_ARGS__);    \
   exit(EXIT_FAILURE);                           \
 } while(0)
 

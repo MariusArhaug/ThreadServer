@@ -52,7 +52,7 @@ static inline void check_conn(int connfd) {
     ERROR("Error reading from socket");
 }
 
-void server_init(struct server_t* self, int n_threads, int n_buff) {
+void server_init(struct server_t* self, thread_f fun) {
   memset(self, 0, sizeof(struct server_t));
   memset(&self->serv_addr, 0, sizeof(struct sockaddr_in));
   memset(&self->cli_addr, 0, sizeof(struct sockaddr_in));
@@ -62,6 +62,7 @@ void server_init(struct server_t* self, int n_threads, int n_buff) {
   self->serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   self->serv_addr.sin_port = htons(state.port);
   self->connection_size = CONNECTION_SIZE;
+  self->thread_function = fun;
 
   bind_sock(self);
 }
@@ -69,7 +70,12 @@ void server_init(struct server_t* self, int n_threads, int n_buff) {
 void server_start(struct server_t* self) {
   listen(self->sockfd, self->connection_size);
   printf("Server listening on port: %d \n", state.port);
+
   char readBuff[MAXREQ];
+  // struct req_arg_t req_arg = {
+  //   .buffer = readBuff,
+  // };
+  
 
   while(true) {
     int connfd;
@@ -80,7 +86,12 @@ void server_start(struct server_t* self) {
 
     check_read(read(connfd, readBuff, sizeof(readBuff)-1));
     
+    
+
     handle_request(readBuff, connfd);
+
+    //for (int i = 0; i < state.n_threads; i++)
+      //pthread_create(state.thread_pool[i], )
 
     close(connfd);
   }

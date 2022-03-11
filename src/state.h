@@ -2,18 +2,23 @@
 #define STATE_H
 
 #include "server/server.h"
-#define BUFF_L 1024
+#include "types/bbuffer.h"
+
+#include <pthread.h>
+#define WD_L 1024
 
 struct State {
   struct server_t server; 
   int port;
-  char wd[BUFF_L];
+  char wd[WD_L];
   int n_threads;
   int n_bufferslots;
+  pthread_t *thread_pool;
+  BNDBUF* buffer;
+  
 };
 
-// global state
-extern struct State state;
+extern struct State state; // global state
 
 
 #endif 

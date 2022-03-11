@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define HTTP_METHOD_LENGTH 10
+#define HTTP_LENGTH 10
 
 typedef enum {
   GET,

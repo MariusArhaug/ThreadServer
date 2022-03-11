@@ -1,25 +1,37 @@
 #include "state.h"
 #include "server/server.h"
 #include "types/error.h"
+#include "types/bbuffer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <pthread.h>
+#include <stdbool.h>
 
 // global state
 struct State state;
 
+// TODO: fix this
+void* handle_thread(void* arg) {
+  while (true) {
+    // handle_request();
+  }
+}
+
 void init() {
+  state.thread_pool = malloc(state.n_threads * sizeof(pthread_t));
+  state.buffer = bb_init(state.n_bufferslots); 
   server_init(
     &state.server, 
-    state.n_threads, 
-    state.n_bufferslots
+    handle_thread
   );
-  server_start(&state.server);
+  server_start(&state.server); 
 }
 
 void destroy() {
+  free(state.thread_pool);
   server_destroy(&state.server);
 }
 
