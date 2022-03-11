@@ -42,6 +42,8 @@ N_BUFFS=<number of buffers>
 
 ### Executing program
 
+#### Execute yourself without .env variables
+
 Make sure you have `GCC` and `Make` installed on your system and run the following commands
 
 ```
@@ -54,6 +56,9 @@ $ make
 ./bin/mtwwd [www-path] [port] [#threads] [#bufferslots]
 ```
 > Run from binary folder with desired arguments, will not run unless all four have been selected
+
+
+##### Or run from makefile with .env variables
 
 ```
 $ make run
