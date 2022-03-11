@@ -2,7 +2,7 @@
 #include "router.h"
 #include "http-types.h"
 #include "types/response.h"
-#include "util/file.h"
+#include "util/util.h"
 
 #include <string.h>
 #include <sys/socket.h>
@@ -10,15 +10,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NUM_ARGS(...)\
-  (int) ((sizeof((char*[HTTP_METHOD_LENGTH]) {0, ##__VA_ARGS__}))/(sizeof(char*[HTTP_METHOD_LENGTH])) - 1)
+#define N_ARGS(...)\
+  (int) ((sizeof((char*[HTTP_LENGTH]) {0, ##__VA_ARGS__}))/(sizeof(char*[HTTP_LENGTH])) - 1)
 
-#define ROUTE(_endpoint, _route, _method, _handler, ...)                    \
-  if (                                                            \
-    strncmp(_endpoint, _route, strlen(_endpoint)) == 0 &&         \
-    allow_methods(_method, (NUM_ARGS(__VA_ARGS__)), ##__VA_ARGS__)\
-  ) {\
-    _handler(connfd, _route);\
+#define ROUTE(_endpoint, _route, _method, _handler, ...)           \
+  if (                                                             \
+    strncmp(_endpoint, _route, strlen(_endpoint)) == 0           &&\
+    allow_methods(_method, (N_ARGS(__VA_ARGS__)), ##__VA_ARGS__) &&\
+    !illegal_path(route)                                           \
+  ) {                                                              \
+    return _handler(connfd, _route);                               \
   }
     
 
