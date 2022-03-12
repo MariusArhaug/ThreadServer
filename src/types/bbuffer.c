@@ -7,7 +7,7 @@
 #include <string.h>
 
 struct BNDBUF {
-  SEM** sem_arr;
+  SEM* sem;
   size_t i_size;
   size_t t_size;
   uint32_t count;
@@ -16,7 +16,6 @@ struct BNDBUF {
   
   int head;
   int tail;
-
 };
 
 
@@ -24,11 +23,7 @@ BNDBUF* bb_init(uint32_t capacity) {
   BNDBUF* bb = malloc(sizeof(struct BNDBUF));
   memset(bb, 0, sizeof(struct BNDBUF));
 
-  bb->sem_arr = malloc(capacity*sizeof(SEM*));
-
-  for (int i = 0; i < capacity; i++) {
-    bb->sem_arr[i] = sem_init(0);
-  } 
+  bb->sem = sem_init(0);
 
   bb->capacity = capacity;
   bb->count = 0;
@@ -48,7 +43,7 @@ void bb_del(BNDBUF* bb) {
 
 int bb_get(BNDBUF *bb) {
   if (bb->count == 0) {
-      
+     V(bb->sem);
   } 
 
   int fd = bb->buffer[bb->head++];
@@ -59,7 +54,7 @@ int bb_get(BNDBUF *bb) {
 
 void bb_add(BNDBUF *bb, int fd) {
   if (bb->count == bb->capacity) {
-    //block;
+    P(bb->sem);
   }
 
   bb->buffer[bb->tail++] = fd;
