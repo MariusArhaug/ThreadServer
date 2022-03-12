@@ -29,7 +29,8 @@
     "time.h": "c",
     "cstdlib": "cpp",
     "util.h": "c",
-    "error.h": "c"
+    "error.h": "c",
+    "pthread.h": "c"
   },
   "files.exclude": {
     "**/.git": true,
