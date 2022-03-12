@@ -2,12 +2,12 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 
 
 #define STRING(x) #x
 const char* methods[9] = {
     STRING(GET),
-    STRING(HEAD),
     STRING(POST),
     STRING(PUT),
     STRING(DELETE),
@@ -27,16 +27,16 @@ bool is_valid_method(const char* method) {
 }
 
 bool allow_methods(char* method, int len, ...) {
-  va_list methods;
+  va_list allowed_methods;
 
-  va_start(methods, len);
+  va_start(allowed_methods, len);
  
-  bool allow = true;
-
+  bool allow = false;
   for (int i = 0; i < len; i++) 
-    if (strcmp(method, va_arg(methods, char*)) != 0) 
-      allow = false;
+    if (strcmp(method, va_arg(allowed_methods, char*)) != 0) 
+      allow = true;
     
-  va_end(methods);
+  va_end(allowed_methods);
+  printf("method: %s, bool: %s \n", method, allow == true ? "true": "false");
   return allow;
 }

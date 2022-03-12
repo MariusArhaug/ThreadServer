@@ -2,14 +2,16 @@
 #define RESPONSE_H
 
 #define OK_C 200
-#define NOT_FOUND_C 404
 #define UNAUTHORIZED_C 401
+#define NOT_FOUND_C 404
+#define METHOD_NOT_ALLOWED_C 405
 #define INTERNAL_ERROR_C 500
 #define BAD_GATEAWAY_C 502
 
 #define OK_S "200 OK"
 #define NOT_FOUND_S "404 Not Found"
 #define UNAUTHORIZED_S "401 Unauthorized"
+#define METHOD_NOT_ALLOWED_S "405 Method Not Allowed"
 #define INTERNAL_ERROR_S "500 Internal Server Error"
 #define BAD_GATEAWAY_S "502 Bad Gateway";
 
