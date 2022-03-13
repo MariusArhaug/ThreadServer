@@ -19,5 +19,5 @@ typedef enum {
 
 bool is_valid_method(const char* method);
 
-bool allow_methods(char* method, int len, ...);
+bool is_valid_methods(char* method, int len, ...);
 #endif

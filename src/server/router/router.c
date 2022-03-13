@@ -10,15 +10,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ROUTE(_endpoint, _route, _method, _handler, _n, ...)       \
+#define ROUTE(_endpoint, _route, _method, _handler, _n_m, ...)     \
   if (                                                             \
     strncmp(_endpoint, _route, strlen(_endpoint)) == 0           &&\
     !illegal_path(_route)                                          \
   ) {                                                              \
-    if (allow_methods(_method, _n, __VA_ARGS__) == false)          \
-      return illegal_method_handler(connfd, _method);              \
-    else                                                           \
+    if ( is_valid_methods(_method, _n_m, __VA_ARGS__) )            \
       return _handler(connfd, _route);                             \
+    else                                                           \
+      return illegal_method_handler(connfd, _method);              \
   }
     
 

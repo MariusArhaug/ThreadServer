@@ -26,17 +26,16 @@ bool is_valid_method(const char* method) {
   return false; 
 }
 
-bool allow_methods(char* method, int len, ...) {
+bool is_valid_methods(char* method, int len, ...) {
   va_list allowed_methods;
 
   va_start(allowed_methods, len);
  
   bool allow = false;
   for (int i = 0; i < len; i++) 
-    if (strcmp(method, va_arg(allowed_methods, char*)) != 0) 
+    if (strcmp(method, va_arg(allowed_methods, char*)) == 0) 
       allow = true;
     
   va_end(allowed_methods);
-  printf("method: %s, bool: %s \n", method, allow == true ? "true": "false");
   return allow;
 }
