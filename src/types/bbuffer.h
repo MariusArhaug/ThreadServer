@@ -1,7 +1,7 @@
 #ifndef ____BBUFFER___H___
 #define ____BBUFFER___H___
 
-#include <inttypes.h>
+#include <stddef.h>
 /*
  * Bounded Buffer implementation to manage int values that supports multiple 
  * readers and writers.
@@ -38,7 +38,7 @@ typedef struct BNDBUF BNDBUF;
  * @param capacity The number of integers that can be stored in the bounded buffer.
  * @return BNDBUF* pointer for bounded buffer, or NULL if an error occured.
  */
-BNDBUF *bb_init(uint32_t capacity);
+BNDBUF *bb_init(size_t capacity);
 
 
 /**
@@ -55,7 +55,7 @@ void bb_del(BNDBUF *bb);
  * @param bb bunded buffer
  * @return int element
  */
-int bb_get(BNDBUF *bb);
+void* bb_get(BNDBUF *bb);
 
 /**
  * @brief  Adds element to bounded buffer. if full it blocks until an element is removed.
@@ -63,6 +63,6 @@ int bb_get(BNDBUF *bb);
  * @param bb bound buffer
  * @param fd value to be added
  */
-void bb_add(BNDBUF *bb, int fd);
+void bb_add(BNDBUF *bb, void* fd);
 
 #endif

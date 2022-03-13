@@ -14,26 +14,22 @@
 #define STDOUT(_x, ...) \
   printf(ANSI_COLOR_GREEN _x ANSI_COLOR_RESET, ##__VA_ARGS__)
 
-typedef void (*thread_f)(void *);
+typedef void* (*thread_f)(void *);
 
 struct server_t {
   struct sockaddr_in serv_addr, cli_addr;
   char inet6[INET6_ADDRSTRLEN];
   int sockfd;
   int connection_size;
-  thread_f thread_function;
 };
 
-struct req_arg_t {
-  char* buffer;
-  int connfd;
-};
+typedef struct request_t request_t;
 
 /**
  * @brief initialize server 
  * 
  */
-void server_init(struct server_t*, thread_f);
+void server_init(struct server_t*);
 
 /**
  * @brief main server loop to handle connections and to send them to worker threads for the system.
@@ -46,5 +42,8 @@ void server_start(struct server_t*);
  * 
  */
 void server_destroy(struct server_t*);
+
+
+void* handle_thread(void* arg);
 
 #endif

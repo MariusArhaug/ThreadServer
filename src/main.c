@@ -13,19 +13,15 @@
 // global state
 struct State state;
 
-// TODO: fix this
-void* handle_thread(void* arg) {
-  while (true) {
-    // handle_request();
-  }
-}
 
 void init() {
-  state.thread_pool = malloc(state.n_threads * sizeof(pthread_t));
   state.buffer = bb_init(state.n_bufferslots); 
+  state.thread_pool = (pthread_t*) malloc(state.n_threads * sizeof(pthread_t));
+  for (int i = 0; i < state.n_threads; i++) 
+    pthread_create(&state.thread_pool[i], NULL, handle_thread, state.buffer);
+
   server_init(
-    &state.server, 
-    handle_thread
+    &state.server
   );
   server_start(&state.server); 
 }

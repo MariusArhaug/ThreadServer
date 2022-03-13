@@ -15,62 +15,40 @@
  */
 typedef struct SEM SEM;
 
-/* Creates a new semaphore.
- *
- * This function creates a new semaphore. If an error occurs during the 
+/**
+ * @brief creates a new semaphore. If an error occurs during the 
  * initialization, the implementation shall free all resources already 
  * allocated so far.
- *
- * Parameters:
- *
- * initVal      the initial value of the semaphore
- *
- * Returns:
- *
- * handle for the created semaphore, or NULL if an error occured.
+ * 
+ * @param initVal the initial value of the semaphore
+ * @return SEM* handle for the created semaphore, or NULL if an error occured.
  */
-
 SEM *sem_init(uint32_t initVal);
 
-/* Destroys a semaphore and frees all associated resources.
- *
- * Parameters:
- *
- * sem           handle of the semaphore to destroy
- *
- * Returns:
- *
- * 0 on success, negative value on error. 
- *
- * In case of an error, not all resources may have been freed, but 
- * nevertheless the semaphore handle must not be used any more.
+/**
+ * @brief Destroys a semaphore and frees all associated resources.
+ * 
+ * @param sem handle of the semaphore to destroy
+ * @return int 0 on success, negative value on error. 
  */
-
 int sem_del(SEM *sem);
 
-/* P (wait) operation.
- * 
- * Attempts to decrement the semaphore value by 1. If the semaphore value 
+/**
+ * @brief P (wait) operation. Attempts to decrement the semaphore value by 1. If the semaphore value 
  * is 0, the operation blocks until a V operation increments the value and 
  * the P operation succeeds.
- *
- * Parameters:
- *
- * sem           handle of the semaphore to decrement
+ * 
+ * @param sem semaphore handler to decrement 
  */
-
 void P(SEM *sem);
 
-/* V (signal) operation.
- *
+/**
+ * @brief V (signal) operation.
  * Increments the semaphore value by 1 and notifies P operations that are 
  * blocked on the semaphore of the change.
- *
- * Parameters:
- *
- * sem           handle of the semaphore to increment
+ * 
+ * @param sem handle of the semaphore to increment
  */
-
 void V(SEM *sem); 
 
 #endif
