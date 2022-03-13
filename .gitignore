@@ -58,3 +58,7 @@ dkms.conf
 
 #Output files
 /bin/*
+
+/lib/*
+
+/doc/test-files/

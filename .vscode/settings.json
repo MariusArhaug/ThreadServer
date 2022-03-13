@@ -30,7 +30,9 @@
     "cstdlib": "cpp",
     "util.h": "c",
     "error.h": "c",
-    "pthread.h": "c"
+    "pthread.h": "c",
+    "stdbool.h": "c",
+    "curl.h": "c"
   },
   "files.exclude": {
     "**/.git": true,
@@ -45,5 +47,6 @@
     "editor.wordBasedSuggestions": true,
     "editor.suggest.insertMode": "replace",
     "editor.semanticHighlighting.enabled": true
-  }
+  },
+  "git.ignoredRepositories": ["${workspaceFolder}/lib/**"]
 }
