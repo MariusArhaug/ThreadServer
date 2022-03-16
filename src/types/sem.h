@@ -10,9 +10,6 @@
  * shall be utilized to implement the semaphore operations.
  */
 
-/* Opaque type of a semaphore. 
- * ...you need to figure out the contents of struct SEM yourself!
- */
 typedef struct SEM SEM;
 
 /**
@@ -34,9 +31,9 @@ SEM *sem_init(uint32_t initVal);
 int sem_del(SEM *sem);
 
 /**
- * @brief P (wait) operation. Attempts to decrement the semaphore value by 1. If the semaphore value 
- * is 0, the operation blocks until a V operation increments the value and 
- * the P operation succeeds.
+ * @brief P (wait) operation. 
+ * Attempts to decrement the semaphore value by 1. If the semaphore value 
+ * is 0, the process calling P is blocked until a V operation increments the value
  * 
  * @param sem semaphore handler to decrement 
  */

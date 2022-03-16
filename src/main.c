@@ -17,8 +17,14 @@ struct State state;
 void init() {
   state.buffer = bb_init(state.n_bufferslots); 
   state.thread_pool = (pthread_t*) malloc(state.n_threads * sizeof(pthread_t));
-  for (int i = 0; i < state.n_threads; i++) 
-    pthread_create(&state.thread_pool[i], NULL, handle_thread, state.buffer);
+  state.thread_args = malloc(state.n_threads*sizeof(struct thread_arg_t*));
+  for (int i = 0; i < state.n_threads; i++) {
+    struct thread_arg_t* arg = malloc(sizeof(struct thread_arg_t));
+    arg->buffer = state.buffer;
+    arg->thread_no = i;
+    state.thread_args[i] = arg;
+    pthread_create(&state.thread_pool[i], NULL, handle_thread, state.thread_args[i]); // pass buffer to handle_thread func
+  }
 
   server_init(
     &state.server
@@ -27,7 +33,14 @@ void init() {
 }
 
 void destroy() {
+  for (int i = 0; i < state.n_threads; i++) {
+    pthread_cancel(state.thread_pool[i]);
+    pthread_join(state.thread_pool[i], NULL);
+    free(state.thread_args[i]);
+  }
+  free(state.thread_args);
   free(state.thread_pool);
+  bb_del(state.buffer);
   server_destroy(&state.server);
 }
 

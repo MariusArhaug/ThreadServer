@@ -15,10 +15,14 @@ struct State {
   int n_bufferslots;
   pthread_t *thread_pool;
   BNDBUF* buffer;
-  
+  struct thread_arg_t** thread_args;
 };
 
 extern struct State state; // global state
 
+struct thread_arg_t {
+  BNDBUF* buffer;
+  int thread_no;
+};
 
 #endif 
