@@ -16,7 +16,6 @@
 #define KEY_NOT_FOUND "Key not found."
 #define READ "r"
 
-
 char* get_envv(char* key) {
   char cwd[FILENAME_MAX];
   getcwd(cwd, FILENAME_MAX);
@@ -26,12 +25,12 @@ char* get_envv(char* key) {
   ssize_t read;
   fp = fopen(ENV_PATH(cwd), READ);
   if (fp == NULL)
-    ERROR(ENV_NOT_FOUND);
+    ERROR_E(ENV_NOT_FOUND);
   
   while ((read = getline(&line, &len, fp)) != -1) {
     char* token = strtok(line, ENV_SEPARATOR);
     if (token == NULL)
-      ERROR(UNEXPECTED_ERROR);
+      ERROR_E(UNEXPECTED_ERROR);
     if (strcmp(token, key) == 0) {
       char* lastToken;
       while (token != NULL) {
@@ -44,5 +43,5 @@ char* get_envv(char* key) {
   fclose(fp);
   if (line)
     free(line);
-  ERROR(KEY_NOT_FOUND);
+  ERROR_E(KEY_NOT_FOUND);
 }

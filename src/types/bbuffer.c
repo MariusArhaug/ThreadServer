@@ -18,7 +18,6 @@ struct BNDBUF {
   int tail;
 };
 
-
 BNDBUF* bb_init(uint32_t capacity) {
   BNDBUF* bb = malloc(sizeof(struct BNDBUF));
   memset(bb, 0, sizeof(struct BNDBUF));
@@ -54,7 +53,6 @@ int bb_get(BNDBUF *bb) {
   P(bb->sem_full);
   return fd;
 }
-
 
 void bb_add(BNDBUF *bb, int fd) {
   if (bb->count == bb->capacity) {
