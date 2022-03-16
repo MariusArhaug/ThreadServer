@@ -21,6 +21,22 @@
       return illegal_method_handler(connfd, _method);              \
   }
     
+#define NOT_FOUND_BODY (\
+  "{"\
+    "\"error\": {"\
+    "\"code\": %d,"\
+    "\"message\": \"endpoint '%s' not found\""\
+    "}"\
+  "}\n")
+
+#define ILLEGAL_METHOD_BODY (\
+  "{"\
+    "\"error\": {"\
+    "\"code\": %d,"\
+    "\"message\": \"method '%s' not allowed\""\
+    "}"\
+  "}\n")
+
 
 static void not_found_handler(int connfd, char* route);
 static void doc_handler(int connfd, char* route);
@@ -33,16 +49,7 @@ void handle_route(int connfd, char* method, char* route) {
 
 }
 
-#define NOT_FOUND_BODY (\
-  "{\n"\
-    "\t\"error\": {\n"\
-    "\t\t\"code\": %d,\n"\
-    "\t\"message\": \"endpoint '%s' not found\""\
-    "\t}\n"\
-  "}\n")
-
 void not_found_handler(int connfd, char* route) {
-  
   response_t* resp = response_init();
   
   set_response_status(resp, NOT_FOUND_S);
@@ -51,12 +58,19 @@ void not_found_handler(int connfd, char* route) {
   sprintf(body, NOT_FOUND_BODY, NOT_FOUND_C, route);
   set_body(resp, body);
 
-  char* resp_str = response_to_str(resp);
-  
-  write(connfd, resp_str, strlen(resp_str));
+  send_response(connfd, resp);
+}
 
-  free(resp_str);
-  response_destroy(resp);
+void illegal_method_handler(int connfd, char* method) {
+  response_t* resp = response_init();
+  
+  set_response_status(resp, METHOD_NOT_ALLOWED_S);
+  set_response_content(resp, JSON_CONTENT);
+  char body[1024];
+  sprintf(body, ILLEGAL_METHOD_BODY, METHOD_NOT_ALLOWED_C, method);
+  set_body(resp, body);
+
+  send_response(connfd, resp);
 }
 
 void doc_handler(int connfd, char* route) {
@@ -77,36 +91,6 @@ void doc_handler(int connfd, char* route) {
 
   set_body(resp, body);
 
-  char* resp_str = response_to_str(resp);
-
-  write(connfd, resp_str, strlen(resp_str));
-  free(resp_str);
-  response_destroy(resp);
+  send_response(connfd, resp);
   free(body);
 }
-
-#define ILLEGAL_METHOD_BODY (\
-  "{\n"\
-    "\t\"error\": {\n"\
-    "\t\t\"code\": %d,\n"\
-    "\t\"message\": \"method '%s' not allowed\""\
-    "\t}\n"\
-  "}\n")
-
-void illegal_method_handler(int connfd, char* method) {
-  response_t* resp = response_init();
-  
-  set_response_status(resp, METHOD_NOT_ALLOWED_S);
-  set_response_content(resp, JSON_CONTENT);
-  char body[1024];
-  sprintf(body, ILLEGAL_METHOD_BODY, METHOD_NOT_ALLOWED_C, method);
-  set_body(resp, body);
-
-  char* resp_str = response_to_str(resp);
-  
-  write(connfd, resp_str, strlen(resp_str));
-
-  free(resp_str);
-  response_destroy(resp);
-}
- 

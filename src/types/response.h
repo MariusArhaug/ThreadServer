@@ -16,9 +16,8 @@
 #define BAD_GATEAWAY_S "502 Bad Gateway";
 
 
-#define CONTENT_TYPE "Content-Type"
-#define JSON_CONTENT CONTENT_TYPE "application/json"
-#define HTML_CONTENT CONTENT_TYPE "text/html"
+#define JSON_CONTENT "application/json"
+#define HTML_CONTENT "text/html"
 #define ALLOW_ORIGIN "Access-Control-Allow-Origin: *"
 
 
@@ -31,8 +30,7 @@ void set_request_header(response_t* self, char* method, char* uri);
 void set_response_status(struct response_t* self, char* status);
 void set_response_content(struct response_t* self, char* content);
 void set_body(struct response_t* self, char* body);
-char* response_to_str(struct response_t* self);
 void response_destroy(struct response_t* self);
-
+void send_response(int connfd, struct response_t* self);
 
 #endif

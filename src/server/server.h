@@ -8,11 +8,8 @@
 
 #include "util/util.h"
 
-#define CONNECTION_SIZE 10
+#define CONNECTION_SIZE 1
 #define MAXREQ (4096*1024)
-
-#define STDOUT(_x, ...) \
-  printf(ANSI_COLOR_GREEN _x ANSI_COLOR_RESET, ##__VA_ARGS__)
 
 typedef void* (*thread_f)(void *);
 
