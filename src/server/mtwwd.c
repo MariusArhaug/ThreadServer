@@ -18,45 +18,42 @@
 #include <time.h>
 #include <fcntl.h>
 
+#define SOCKETERROR -1
+
 extern struct State state;
 
-struct request_t {
-  char readbuffer[MAXREQ];
-  int connfd;
-};
+static void handle_request(int connfd, int thread_no);
 
-// static void handle_request(char* buffer, int connfd);
-static void handle_request(struct request_t* req);
+static int check(int fd, const char* msg) {
+  if (fd == SOCKETERROR)
+    ERROR_P(msg);
+  return fd;
+}
 
-
-static inline void accept_conn(struct request_t* req, struct server_t* self) {
+static int accept_conn(struct server_t* self) {
   socklen_t clilen = sizeof(self->cli_addr);
   int connfd = accept(
       self->sockfd, 
       (struct sockaddr*) &self->cli_addr, 
       &clilen );
-  if (connfd < 0)
-     ERROR("Error reading from socket");
-  req->connfd = connfd;
+  return connfd;
 }
 
-static inline void bind_sock(struct server_t* self) {
-  if (
-    bind(
-     self->sockfd, 
-     (struct sockaddr*) &self->serv_addr, 
-     sizeof(self->serv_addr)
-    ) == -1
-  ) PERROR("Bind error");
-}
+static int read_conn(int connfd, char* outBuffer) {
+  char readBuffer[MAXREQ];
+  int rcvd = read(connfd, readBuffer, sizeof(readBuffer)-1);
+  if (rcvd < 0) {
+    fprintf(stderr, "recv() error \n");
+    return SOCKETERROR;
+  }
 
-static inline void read_conn(struct request_t* req) {
-  int rcvd = read(req->connfd, req->readbuffer, sizeof(req->readbuffer)-1);
-  if (rcvd < 0) 
-    ERROR("recv() error");
-  if (rcvd==0) 
-    ERROR("Client disconnected unexpectedly.");
-  req->connfd = rcvd;
+  if (rcvd==0) {
+    fprintf(stderr, "Client disconnected unexpectedly. \n");
+    return SOCKETERROR;
+  }
+
+  strcpy(outBuffer, readBuffer);
+  return 0;
 }
 
 
@@ -71,67 +68,46 @@ void server_init(struct server_t* self) {
   self->serv_addr.sin_port = htons(state.port);
   self->connection_size = CONNECTION_SIZE;
 
-  bind_sock(self);
+  check(bind(self->sockfd, (struct sockaddr*) &self->serv_addr, sizeof(self->serv_addr)), "Bind failed!");
 }
 
 void server_start(struct server_t* self) {
-  listen(self->sockfd, self->connection_size);
+  check(listen(self->sockfd, self->connection_size), "Failed to listen");
   printf("Server listening on port: %d \n", state.port);
 
-  struct request_t request;
-
-  //char readBuff[MAXREQ];
-  // struct req_arg_t req_arg = {
-  //   .buffer = readBuff,
-  // };
-  
-
   while(true) {
-    //int connfd;
-    
-    //check_conn((connfd = accept_conn(self))); 
-    //request.connfd = accept_conn(self);
-    accept_conn(&request, self);
-    memset(request.readbuffer, 0, MAXREQ);
-    
-    //memset(readBuff, 0, MAXREQ);
-
-    read_conn(&request);
-
-    // pthread_mutext_lock(&(state.buffer))
-
-    bb_add(state.buffer, (void*) &request);
-    
-
-    //handle_request(readBuff, connfd);
-
-    //for (int i = 0; i < state.n_threads; i++)
-      //pthread_create(state.thread_pool[i], )
-    //close(request.connfd);
+    fflush(stdout);
+    int connfd = accept_conn(self);
+    if (connfd < 0)
+      continue;
+    bb_add(state.buffer, connfd);    
   }
-  
 }
 
-// TODO: fix this
 void* handle_thread(void* arg) {
-  
-  while (true) {
-    struct request_t* req = bb_get((BNDBUF*) arg);
-    if (req != NULL) {
-      handle_request(req);
-      close(req->connfd);
-    }
-  }
+  struct thread_arg_t* arg_t = arg;
+
+  // keep thread alive
+  while (true) 
+    handle_request(bb_get(arg_t->buffer), arg_t->thread_no); 
 }
 
-void handle_request(struct request_t* req) {  
+//TODO: fix read_conn errors...
+void handle_request(int connfd, int thread_no) {  
+  char* readbuffer = malloc(MAXREQ*sizeof(char));
+  if (read_conn(connfd, readbuffer) == SOCKETERROR) {
+    free(readbuffer);
+    return;
+  }
 
-  char* method = strtok(req->readbuffer, " \t\r\n");
+  char* method = strtok(readbuffer, " \t\r\n");
   char* uri = strtok(NULL, " \t");
 
-  printf("%s %s\n", method, uri);
+  printf("%s %s \t Request handled by thread #%d \n\n", method, uri, thread_no);
+  handle_route(connfd, method, uri);
 
-  handle_route(req->connfd, method, uri);
+  free(readbuffer);
+  close(connfd);
 }
 
 void server_destroy(struct server_t* self) {
