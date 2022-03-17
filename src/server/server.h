@@ -15,7 +15,6 @@ typedef void* (*thread_f)(void *);
 
 struct server_t {
   struct sockaddr_in serv_addr, cli_addr;
-  char inet6[INET6_ADDRSTRLEN];
   int sockfd;
   int connection_size;
 };

@@ -15,12 +15,22 @@
     strncmp(_endpoint, _route, strlen(_endpoint)) == 0           &&\
     !illegal_path(_route)                                          \
   ) {                                                              \
-    if ( is_valid_methods(_method, _n_m, __VA_ARGS__) )            \
-      return _handler(connfd, _route);                             \
-    else                                                           \
+    if ( !is_valid_methods(_method, _n_m, __VA_ARGS__) )           \
       return illegal_method_handler(connfd, _method);              \
+    if ( is_regular_file(_route) == false )                        \
+      return bad_request_handler(connfd, _route);                  \
+    else                                                           \
+      return _handler(connfd, _route);                             \
   }
     
+#define BAD_REQUEST_BODY (\
+  "{"\
+    "\"error\": {"\
+    "\"code\": %d,"\
+    "\"message\": \"bad request '%s' unable to parse\""\
+    "}"\
+  "}\n")
+  
 #define NOT_FOUND_BODY (\
   "{"\
     "\"error\": {"\
@@ -37,16 +47,14 @@
     "}"\
   "}\n")
 
-
+static void bad_request_handler(int connfd, char* route);
 static void not_found_handler(int connfd, char* route);
 static void doc_handler(int connfd, char* route);
 static void illegal_method_handler(int connfd, char* route);
 
 void handle_route(int connfd, char* method, char* route) {
-  ROUTE("/doc/write/", route, method, not_found_handler, 1, "POST")
   ROUTE("/doc/"      , route, method, doc_handler, 1,       "GET")
   ROUTE("/"          , route, method, not_found_handler, 1, "GET")
-
 }
 
 void not_found_handler(int connfd, char* route) {
@@ -68,6 +76,19 @@ void illegal_method_handler(int connfd, char* method) {
   set_response_content(resp, JSON_CONTENT);
   char body[1024];
   sprintf(body, ILLEGAL_METHOD_BODY, METHOD_NOT_ALLOWED_C, method);
+  set_body(resp, body);
+
+  send_response(connfd, resp);
+}
+
+void bad_request_handler(int connfd, char* route) {
+  response_t* resp = response_init();
+
+  set_response_status(resp, BAD_REQUEST_S);
+  set_response_content(resp, JSON_CONTENT);
+
+  char body[1024];
+  sprintf(body, BAD_REQUEST_BODY, BAD_REQUEST_C, route);
   set_body(resp, body);
 
   send_response(connfd, resp);

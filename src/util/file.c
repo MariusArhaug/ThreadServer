@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #define READ "r"
@@ -16,6 +19,17 @@ int read_file(FILE** fp, char* path) {
   (*fp) = fopen(path, READ);
   
   return 0;
+}
+
+bool is_regular_file(const char *path) {
+  struct stat path_stat;
+
+  char filebuffer[1024];
+  strcpy(filebuffer, state.wd);
+  strcat(filebuffer, path);
+
+  stat(filebuffer, &path_stat);
+  return S_ISREG(path_stat.st_mode);
 }
 
 char* file_to_str(FILE* fp) {

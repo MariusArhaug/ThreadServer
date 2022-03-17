@@ -2,6 +2,7 @@
 #define __FILE_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #define READ "r"
 
@@ -21,4 +22,15 @@ int read_file(FILE** fp ,char* path);
  * @return char* stirng convertion
  */
 char* file_to_str(FILE* fp);
+
+
+/**
+ * @brief checks if path is path to file
+ * 
+ * @param path path to check 
+ * @return true is path to file
+ * @return false  is not path to file but directory or something else..
+ */
+bool is_regular_file(const char *path);
+
 #endif

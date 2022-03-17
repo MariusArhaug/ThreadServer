@@ -32,7 +32,8 @@
     "error.h": "c",
     "pthread.h": "c",
     "stdbool.h": "c",
-    "curl.h": "c"
+    "curl.h": "c",
+    "stat.h": "c"
   },
   "files.exclude": {
     "**/.git": true,
