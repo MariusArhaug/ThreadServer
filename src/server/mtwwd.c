@@ -39,23 +39,6 @@ static int accept_conn(struct server_t* self) {
   return connfd;
 }
 
-static int read_conn(int connfd, char* outBuffer) {
-  char readBuffer[MAXREQ];
-  int rcvd = read(connfd, readBuffer, sizeof(readBuffer)-1);
-  if (rcvd < 0) {
-    fprintf(stderr, "recv() error \n");
-    return SOCKETERROR;
-  }
-
-  if (rcvd==0) {
-    fprintf(stderr, "Client disconnected unexpectedly. \n");
-    return SOCKETERROR;
-  }
-
-  strcpy(outBuffer, readBuffer);
-  return 0;
-}
-
 
 void server_init(struct server_t* self) {
   memset(self, 0, sizeof(struct server_t));
@@ -94,19 +77,15 @@ void* handle_thread(void* arg) {
 
 //TODO: fix read_conn errors...
 void handle_request(int connfd, int thread_no) {  
-  char* readbuffer = malloc(MAXREQ*sizeof(char));
-  if (read_conn(connfd, readbuffer) == SOCKETERROR) {
-    free(readbuffer);
-    return;
-  }
+  char readbuffer[MAXREQ];
 
+  check(read(connfd, readbuffer, sizeof(readbuffer)-1), "Failed to read");
   char* method = strtok(readbuffer, " \t\r\n");
   char* uri = strtok(NULL, " \t");
 
   printf("%s %s \t Request handled by thread #%d \n\n", method, uri, thread_no);
   handle_route(connfd, method, uri);
 
-  free(readbuffer);
   close(connfd);
 }
 
