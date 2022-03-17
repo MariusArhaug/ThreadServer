@@ -47,18 +47,23 @@ void destroy() {
 
 static inline void check_args(int argc, char* argv[]) {
   if (argc != 5)
-    ERROR("Usage: ./mtwwd [www-path] [port] [#threads] [#bufferslots]"); 
+    ERROR_P("Usage: ./mtwwd [www-path] [port] [#threads] [#bufferslots]"); 
   
   strcpy(state.wd, argv[1]);
 
   errno = 0;
-
   state.port = strtol(argv[2], NULL, 10);
   state.n_threads = strtol(argv[3], NULL, 10);
   state.n_bufferslots = strtol(argv[4], NULL, 10);
 
   if (errno == ERANGE)
-    ERROR("Number port, n_threads or n_bufferslot is not a valid number (parsing error)");
+    ERROR_P("Number port, n_threads or n_bufferslot is not a valid number (parsing error)");
+
+  if (state.n_bufferslots <= 0)
+    ERROR_E("[#bufferslots] cannot be a negative value or zero");
+  
+  if (state.n_threads <= 0)
+    ERROR_E("[#threads] cannot be a negative value or zero");
 }
 
 
