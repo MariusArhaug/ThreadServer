@@ -4,6 +4,7 @@
 #define OK_C 200
 #define BAD_REQUEST_C 400
 #define UNAUTHORIZED_C 401
+#define FORBIDDEN_C 403
 #define NOT_FOUND_C 404
 #define METHOD_NOT_ALLOWED_C 405
 #define INTERNAL_ERROR_C 500
@@ -11,6 +12,7 @@
 
 #define OK_S "200 OK"
 #define BAD_REQUEST_S "400 Bad Request"
+#define FORBIDDEN_S "403 Forbidden "
 #define NOT_FOUND_S "404 Not Found"
 #define UNAUTHORIZED_S "401 Unauthorized"
 #define METHOD_NOT_ALLOWED_S "405 Method Not Allowed"

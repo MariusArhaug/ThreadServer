@@ -10,18 +10,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// handle incomming request to respective handlers, a little pre-processor fun.
 #define ROUTE(_endpoint, _route, _method, _handler, _n_m, ...)     \
   if (                                                             \
-    strncmp(_endpoint, _route, strlen(_endpoint)) == 0           &&\
-    !illegal_path(_route)                                          \
+    strncmp(_endpoint, _route, strlen(_endpoint)) == 0             \
   ) {                                                              \
+    if ( illegal_path(_route) )                                    \
+      return forbidden_request_handler(connfd, _route);            \
     if ( !is_valid_methods(_method, _n_m, __VA_ARGS__) )           \
       return illegal_method_handler(connfd, _method);              \
     if ( is_regular_file(_route) == false )                        \
       return bad_request_handler(connfd, _route);                  \
     else                                                           \
       return _handler(connfd, _route);                             \
-  }
+  } else                                                           \
+    return not_found_handler(connfd, _route);
     
 #define BAD_REQUEST_BODY (\
   "{"\
@@ -39,6 +42,14 @@
     "}"\
   "}\n")
 
+#define FORBIDDEN_METHOD_BODY (\
+  "{"\
+    "\"error\": {"\
+    "\"code\": %d,"\
+    "\"message\": \"the request '%s' has forbidden values\""\
+    "}"\
+  "}\n")
+
 #define ILLEGAL_METHOD_BODY (\
   "{"\
     "\"error\": {"\
@@ -47,14 +58,21 @@
     "}"\
   "}\n")
 
+// bad request handlers
 static void bad_request_handler(int connfd, char* route);
 static void not_found_handler(int connfd, char* route);
-static void doc_handler(int connfd, char* route);
 static void illegal_method_handler(int connfd, char* route);
+static void forbidden_request_handler(int connfd, char* route);
+
+//route handlers
+static void doc_handler(int connfd, char* route);
+
 
 void handle_route(int connfd, char* method, char* route) {
-  ROUTE("/doc/"      , route, method, doc_handler, 1,       "GET")
-  ROUTE("/"          , route, method, not_found_handler, 1, "GET")
+  // allow route under /doc/ with GET method to be accessed, req handled by doc_handler
+  ROUTE("/doc/"      , route, method, doc_handler, 1,       "GET") 
+
+  //TODO add more endpoints to make server also behave like REST api.
 }
 
 void not_found_handler(int connfd, char* route) {
@@ -92,6 +110,19 @@ void bad_request_handler(int connfd, char* route) {
   set_body(resp, body);
 
   send_response(connfd, resp);
+}
+
+void forbidden_request_handler(int connfd, char* route) {
+  response_t* resp = response_init();
+
+  set_response_status(resp, FORBIDDEN_S);
+  set_response_content(resp, JSON_CONTENT);
+
+  char body[1024];
+  sprintf(body, FORBIDDEN_METHOD_BODY, FORBIDDEN_C, route);
+  set_body(resp, body);
+
+  send_response(connfd, resp); 
 }
 
 void doc_handler(int connfd, char* route) {
