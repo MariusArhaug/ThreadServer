@@ -59,11 +59,11 @@ static inline void check_args(int argc, char* argv[]) {
   if (errno == ERANGE)
     ERROR_P("Number port, n_threads or n_bufferslot is not a valid number (parsing error)");
 
-  if (state.n_bufferslots <= 0)
-    ERROR_E("[#bufferslots] cannot be a negative value or zero");
+  if (state.n_bufferslots < 0)
+    ERROR_E("[#bufferslots] cannot be a negative value");
   
-  if (state.n_threads <= 0)
-    ERROR_E("[#threads] cannot be a negative value or zero");
+  if (state.n_threads < 0)
+    ERROR_E("[#threads] cannot be a negative value");
 }
 
 

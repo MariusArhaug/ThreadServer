@@ -58,6 +58,18 @@ void server_start(struct server_t* self) {
   check(listen(self->sockfd, self->connection_size), "Failed to listen");
   printf("Server listening on port: %d \n", state.port);
 
+   //TODO add sighandler to gracefully shut down server
+
+  if (state.n_bufferslots == 0 && state.n_threads == 0) {
+    while(true) {
+      int connfd = accept_conn(self);
+      if (connfd < 0)
+        continue;
+      handle_request(connfd, 1);
+    }
+    return;
+  } 
+ 
   while(true) {
     fflush(stdout);
     int connfd = accept_conn(self);
@@ -75,7 +87,6 @@ void* handle_thread(void* arg) {
     handle_request(bb_get(arg_t->buffer), arg_t->thread_no); 
 }
 
-//TODO: fix read_conn errors...
 void handle_request(int connfd, int thread_no) {  
   char readbuffer[MAXREQ];
 
