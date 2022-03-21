@@ -6,7 +6,7 @@ CFLAGS += -Isrc/ -Ilib/curl/include
 CFLAGS += -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700
 LDFLAGS = -g -ldl -lpthread
 
-OUT=mtwwd
+OUT=mtwwwd
 
 ENV = .env
 
