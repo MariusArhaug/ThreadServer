@@ -58,8 +58,6 @@ void server_start(struct server_t* self) {
   check(listen(self->sockfd, self->connection_size), "Failed to listen");
   printf("Server listening on port: %d \n", state.port);
 
-   //TODO add sighandler to gracefully shut down server
-
   if (state.is_multihreaded) {
     while(state.run) {
       fflush(stdout);

@@ -52,6 +52,7 @@ struct response_t {
   char* body;
 } response;
 
+// passive declaration
 static char* response_to_str(struct response_t* self);
 
 response_t* response_init() {
@@ -117,7 +118,7 @@ char* response_to_str(struct response_t* self) {
 
 }
 
-void send_response(int connfd, struct response_t* self) {
+void send_response(struct response_t* self, int connfd) {
   char* resp_str = response_to_str(self);
   write(connfd, resp_str, strlen(resp_str));
   free(resp_str);

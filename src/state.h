@@ -25,6 +25,6 @@ extern struct State state; // global state
 struct thread_arg_t {
   BNDBUF* buffer;
   int thread_no;
-};
+}; // args to send to pthread_create thread handler
 
 #endif 

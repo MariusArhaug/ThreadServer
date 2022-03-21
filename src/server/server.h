@@ -39,7 +39,12 @@ void server_start(struct server_t*);
  */
 void server_destroy(struct server_t*);
 
-
+/**
+ * @brief thread function for each consumer thread
+ * 
+ * @param arg optional arg value 
+ * @return void* 
+ */
 void* handle_thread(void* arg);
 
 #endif

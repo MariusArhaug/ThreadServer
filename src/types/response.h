@@ -27,14 +27,59 @@
 
 typedef struct response_t response_t;
 
+/**
+ * @brief allocate memory for response struct
+ * 
+ * @return response_t* pointer to respone struct 
+ */
 response_t* response_init();
 
+/**
+ * @brief Set the request header object
+ * 
+ * @param self resp to set header to
+ * @param method what method to be used
+ * @param uri path in header
+ */
 void set_request_header(response_t* self, char* method, char* uri);
 
+/**
+ * @brief Set the response status object
+ * 
+ * @param self resp 
+ * @param status status type defined in response.h
+ */
 void set_response_status(struct response_t* self, char* status);
+
+/**
+ * @brief Set the response content object
+ * 
+ * @param self resp
+ * @param content content type of resp, application/json or text/html, etc..
+ */
 void set_response_content(struct response_t* self, char* content);
+
+/**
+ * @brief Set the body object
+ * 
+ * @param self 
+ * @param body 
+ */
 void set_body(struct response_t* self, char* body);
+
+/**
+ * @brief destroy respone struct
+ * 
+ * @param self 
+ */
 void response_destroy(struct response_t* self);
-void send_response(int connfd, struct response_t* self);
+
+/**
+ * @brief send response struct to receiver
+ * 
+ * @param self resp to send
+ * @param connfd file descriptor of reciever
+ */
+void send_response(struct response_t* self, int connfd);
 
 #endif

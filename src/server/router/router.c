@@ -84,7 +84,7 @@ void not_found_handler(int connfd, char* route) {
   sprintf(body, NOT_FOUND_BODY, NOT_FOUND_C, route);
   set_body(resp, body);
 
-  send_response(connfd, resp);
+  send_response(resp, connfd);
 }
 
 void illegal_method_handler(int connfd, char* method) {
@@ -96,7 +96,7 @@ void illegal_method_handler(int connfd, char* method) {
   sprintf(body, ILLEGAL_METHOD_BODY, METHOD_NOT_ALLOWED_C, method);
   set_body(resp, body);
 
-  send_response(connfd, resp);
+  send_response(resp, connfd);
 }
 
 void bad_request_handler(int connfd, char* route) {
@@ -109,7 +109,7 @@ void bad_request_handler(int connfd, char* route) {
   sprintf(body, BAD_REQUEST_BODY, BAD_REQUEST_C, route);
   set_body(resp, body);
 
-  send_response(connfd, resp);
+  send_response(resp, connfd);
 }
 
 void forbidden_request_handler(int connfd, char* route) {
@@ -122,7 +122,7 @@ void forbidden_request_handler(int connfd, char* route) {
   sprintf(body, FORBIDDEN_METHOD_BODY, FORBIDDEN_C, route);
   set_body(resp, body);
 
-  send_response(connfd, resp); 
+  send_response(resp, connfd); 
 }
 
 void doc_handler(int connfd, char* route) {
@@ -143,6 +143,6 @@ void doc_handler(int connfd, char* route) {
 
   set_body(resp, body);
 
-  send_response(connfd, resp);
+  send_response(resp, connfd);
   free(body);
 }
