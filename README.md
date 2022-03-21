@@ -34,7 +34,7 @@ Note: **Key name cannot change, only value**
 PORT=<port>
 WEB_PATH=<path to where the webserver should reside>
 N_THREADS=<number of threads>
-N_BUFFS=<number of buffers>
+N_BUFFS=<number of bufferslots>
 
 ```
 
@@ -46,7 +46,7 @@ N_BUFFS=<number of buffers>
 
 Make sure you have `GCC` and `Make` installed on your system and run the following commands
 
-```
+```shell
 $ make
 ```
 
@@ -60,7 +60,7 @@ $ ./bin/mtwwd [www-path] [port] [#threads] [#bufferslots]
 
 ##### Or run from makefile with .env variables
 
-```
+```shell
 $ make run
 ```
 
@@ -77,7 +77,7 @@ The first task was to implement a single threaded web server that served request
 
 This can achieved as such
 
-```
+```shell
 $ ./mtwwwd 8080 home/www-path/ 0 0
 ```
 
@@ -85,7 +85,7 @@ $ ./mtwwwd 8080 home/www-path/ 0 0
 
 <br/>
 
-```
+```shell
 $ curl localhost:8080/doc/index.html
 ```
 
@@ -121,7 +121,7 @@ We pass each thread a handle_thread function that actively tries to get data fro
 
 To run the multithreaded server just use `#threads` and `#bufferslots` greater than 0
 
-```
+```shell
 $ ./mtwwd 8080 /home/www-path/ 4 4
 ```
 
@@ -132,11 +132,13 @@ $ ./mtwwd 8080 /home/www-path/ 4 4
 
 **e) Extra credit: identify significant security problems**
 
+### Path traversal vulnearbility
+
 A major flaw with the web servers current implementation is that it allows a client to request any file in the file system of the server, this is known as a **path traversal vulnearbility**.
 
 An example of this is the following curl request
 
-```
+```shell
 $ curl --path-as-is localhost:8080/doc/../src/main.c
 ```
 
@@ -147,3 +149,31 @@ This would before any security measurements send the main.c file to the request.
 There are two ways to prevent this currently implemented in the `src/server/router` directory
 
 You can prevent this using regEx to match incomming path requests against the pattern `"\.\.\/"`
+
+<br />
+
+### Opening directories
+
+Another problem is that the client could also ask for the whole directory if he does the following:
+
+```shell
+$ curl localhost:8080/
+```
+
+This would then return the contents of all the files under the `www-path` directory.
+
+To prevent this we can use the `stat(3)` function in the `util/file.c` file to check if path is requesting a file or a directory.
+
+<br />
+
+### Opening unwanted files from other sub directories
+
+A final problem is that a client can still open unwanted files under the `www-path` directory such as:
+
+```shell
+$ curl localhost:8080/src/main.c
+```
+
+This would then return the contents of the `main.c` file, again something we might not want our server to do.
+
+To prevent this the `router.c` files handles valid routes that a client might want to reach out for. Currently only the `/doc/` endpoint is requested so that only files within that directory should be allowed to be sent back to the client.
