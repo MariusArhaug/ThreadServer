@@ -131,3 +131,19 @@ $ ./mtwwd 8080 /home/www-path/ 4 4
 <br />
 
 **e) Extra credit: identify significant security problems**
+
+A major flaw with the web servers current implementation is that it allows a client to request any file in the file system of the server, this is known as a **path traversal vulnearbility**.
+
+An example of this is the following curl request
+
+```
+$ curl --path-as-is localhost:8080/doc/../src/main.c
+```
+
+> We use the flag --path-as-is because curl would automatically transform paths such as "../" to "/"
+
+This would before any security measurements send the main.c file to the request. potentially revealing secerets we do not want the client to know about the server. Even worse, the client could find every file in the system the server is running on!
+
+There are two ways to prevent this currently implemented in the `src/server/router` directory
+
+You can prevent this using regEx to match incomming path requests against the pattern `"\.\.\/"`
