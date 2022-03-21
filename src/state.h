@@ -16,6 +16,8 @@ struct State {
   pthread_t *thread_pool;
   BNDBUF* buffer;
   struct thread_arg_t** thread_args;
+  volatile bool run;
+  bool is_multihreaded;
 };
 
 extern struct State state; // global state

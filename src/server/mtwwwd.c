@@ -60,22 +60,22 @@ void server_start(struct server_t* self) {
 
    //TODO add sighandler to gracefully shut down server
 
-  if (state.n_bufferslots == 0 && state.n_threads == 0) {
-    while(true) {
+  if (state.is_multihreaded) {
+    while(state.run) {
+      fflush(stdout);
       int connfd = accept_conn(self);
       if (connfd < 0)
         continue;
-      handle_request(connfd, 1);
+      bb_add(state.buffer, connfd);    
     }
     return;
   } 
  
-  while(true) {
-    fflush(stdout);
+  while(state.run) {
     int connfd = accept_conn(self);
     if (connfd < 0)
       continue;
-    bb_add(state.buffer, connfd);    
+    handle_request(connfd, 1);
   }
 }
 
@@ -94,7 +94,7 @@ void handle_request(int connfd, int thread_no) {
   char* method = strtok(readbuffer, " \t\r\n");
   char* uri = strtok(NULL, " \t");
 
-  printf("%s %s \t Request handled by thread #%d \n\n", method, uri, thread_no);
+  printf("%-5s %-10s \t Request handled by thread #%d \n\n", method, uri, thread_no);
   handle_route(connfd, method, uri);
 
   close(connfd);
@@ -102,5 +102,4 @@ void handle_request(int connfd, int thread_no) {
 
 void server_destroy(struct server_t* self) {
   close(self->sockfd);
-  free(self);
 }
