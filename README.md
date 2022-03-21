@@ -40,6 +40,8 @@ N_BUFFS=<number of bufferslots>
 
 > Note that there should be no space between the equal sign (neither before nor after).
 
+> A provided example can be found in the `.env.dist` file in the root directory
+
 ### Executing program
 
 #### Execute yourself without .env variables
