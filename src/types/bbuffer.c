@@ -22,7 +22,7 @@ BNDBUF* bb_init(uint32_t capacity) {
   BNDBUF* bb = malloc(sizeof(struct BNDBUF));
   memset(bb, 0, sizeof(struct BNDBUF));
   bb->sem_empty = sem_init(0);
-  bb->sem_full = sem_init(0);
+  bb->sem_full = sem_init(capacity);
   bb->capacity = capacity;
 
   bb->buffer = malloc(bb->capacity*sizeof(int));
