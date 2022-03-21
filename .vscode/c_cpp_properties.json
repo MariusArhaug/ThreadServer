@@ -8,7 +8,7 @@
       "cStandard": "c11",
       "cppStandard": "gnu++14",
       "intelliSenseMode": "linux-gcc-x64",
-      "compilerArgs": ["-Isrc/", "-Ilib/curl/include"]
+      "compilerArgs": ["-Isrc/", "-Ilib/curl/include", "-D_XOPEN_SOURCE=700"]
     }
   ],
   "version": 4

@@ -2,8 +2,9 @@
 CC = gcc
 
 CFLAGS = -std=c11 -g -Wall
-CFLAGS += -Isrc/
-LDFLAGS = -g
+CFLAGS += -Isrc/ -Ilib/curl/include
+CFLAGS += -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700
+LDFLAGS = -g -ldl -lpthread
 
 OUT=mtwwd
 
@@ -14,8 +15,6 @@ PORT = $(shell grep "PORT" $(ENV) | cut -d '=' -f2)
 N_THREADS = $(shell grep "N_THREADS" $(ENV) | cut -d '=' -f2)
 N_BUFFS = $(shell grep "N_BUFFS" $(ENV) | cut -d '=' -f2)
 
-#ARGV = $(shell ./scripts/getenv.sh 2>&1) 
-
 SRC = $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard src/**/**/*.c)
 OBJ = $(SRC:.c=.o)
 
@@ -25,18 +24,34 @@ OBJ_TEST = $(SRC_TEST:.c=.o)
 
 BIN = bin
 
+.POSIX: all
 .PHONY: all clean
 
 all: dirs compile
 
+libs:
+	cd lib/curl && cmake . && make
+
 dirs: 
 	mkdir -p ./$(BIN)
+
+#force run - update port if used
+runf:
+	$(MAKE) run || $(MAKE) increase_port  
 
 run: all
 	$(BIN)/$(OUT) $(WEB_PATH) $(PORT) $(N_THREADS) $(N_BUFFS)
 
-# run: all
-# 	$(BIN)/$(OUT) $(ARGV)
+increase_port:
+	- $(eval PORT=$(shell echo $$(($(PORT)+$$($$RANDOM % 10)))))
+	- $(MAKE) run PORT=$(PORT)
+
+valgrind: all
+	valgrind\
+	--track-origins=yes\
+	--leak-check=full\
+	--leak-resolution=high\
+	--show-leak-kinds=all $(MAKE) run
 
 test:	compile-test
 	$(BIN)/test

@@ -33,7 +33,8 @@
     "pthread.h": "c",
     "stdbool.h": "c",
     "curl.h": "c",
-    "stat.h": "c"
+    "stat.h": "c",
+    "bbuffer.h": "c"
   },
   "files.exclude": {
     "**/.git": true,
