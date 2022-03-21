@@ -115,7 +115,7 @@ The buffer then using the semaphores created in the previous task, to signal oth
 
 **d) Multithreaded server**
 
-Putting tasks a) - c) together we can create a thread pool that creates ` [#threads]` number of threads aswell as a buffer with `[#bufferslots]` available to be filled up.
+Putting tasks a) - c) together we can create a thread pool that creates ` [#threads]` number of threads aswell as a buffer with `[#bufferslots]` available to be filled up. The main thread then acts as a `producer thread` while the other #threads are known as `consumer threads`
 
 We pass each thread a handle_thread function that actively tries to get data from the ringbuffer. Whenever the buffer is empty though, it forces the current consuming thread to wait until the buffer has items to give.
 
