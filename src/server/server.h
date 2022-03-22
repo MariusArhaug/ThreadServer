@@ -11,15 +11,11 @@
 #define CONNECTION_SIZE 1
 #define MAXREQ (4096*1024)
 
-typedef void* (*thread_f)(void *);
-
 struct server_t {
   struct sockaddr_in serv_addr, cli_addr;
   int sockfd;
   int connection_size;
 };
-
-typedef struct request_t request_t;
 
 /**
  * @brief initialize server 

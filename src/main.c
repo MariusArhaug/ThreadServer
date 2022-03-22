@@ -28,13 +28,13 @@ void sig_handler(int signum) {
     return;
   }
   if (strcmp(line, "y\n") == 0) {
-    printf("yes, shutting down..\n");
+    printf("yes, shutting down.. \n");
     state.run = false;
     for (int i = 0; i < state.n_threads; i++)
       pthread_cancel(state.thread_pool[i]);
   }
   else if (strcmp(line,"n\n") == 0) {
-    printf("no, continuing..\n");
+    printf("no, continuing.. \n");
   }
   else 
     printf("Unrecognized input, continuing server \n");
@@ -76,6 +76,7 @@ void destroy() {
   }
   bb_del(state.buffer);
   server_destroy(&state.server);
+  printf("Server shutdown. \n");
 }
 
 

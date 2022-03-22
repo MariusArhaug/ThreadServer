@@ -45,13 +45,17 @@ void server_init(struct server_t* self) {
   memset(&self->serv_addr, 0, sizeof(struct sockaddr_in));
   memset(&self->cli_addr, 0, sizeof(struct sockaddr_in));
 
-  self->sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  self->sockfd = check(socket(AF_INET, SOCK_STREAM, 0), "Socket init failure");
+
+  int reuseaddr = 1;
+  check(setsockopt(self->sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr)), "Set socket option failure");
+
   self->serv_addr.sin_family = AF_INET;
   self->serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   self->serv_addr.sin_port = htons(state.port);
   self->connection_size = CONNECTION_SIZE;
 
-  check(bind(self->sockfd, (struct sockaddr*) &self->serv_addr, sizeof(self->serv_addr)), "Bind failed!");
+  check(bind(self->sockfd, (struct sockaddr*) &self->serv_addr, sizeof(self->serv_addr)), "Bind failed");
 }
 
 void server_start(struct server_t* self) {
