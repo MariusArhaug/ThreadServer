@@ -142,6 +142,7 @@ $ curl --path-as-is localhost:8080/doc/../src/main.c
 ```
 
 > We use the flag --path-as-is because curl would automatically transform paths such as "../" to "/"
+> Tools such as a webbrowser or Insomnia/Postman would also transform paths from "../" to "/". To avoid this you need to configure these tools differently..
 
 This would before any security measurements send the main.c file to the request. potentially revealing secerets we do not want the client to know about the server. Even worse, the client could find every file in the system the server is running on!
 
