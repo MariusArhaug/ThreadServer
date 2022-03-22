@@ -13,7 +13,9 @@
 
 struct server_t {
   struct sockaddr_in serv_addr, cli_addr;
+  struct sockaddr_in6 serv_addr_6, cli_addr_6;
   int sockfd;
+  int sockfd_ip6;
   int connection_size;
 };
 
