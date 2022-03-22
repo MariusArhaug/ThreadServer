@@ -6,13 +6,15 @@ A multi threaded web server, serving HTTP 1.1 on _n_ threads using web sockets. 
 
 This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.
 
-It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities. At this moment it only supports IPv4 because the IPv6 implementation suffered some wierd bugs not present when only using IPv4.
+It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities. It supports both IPv4 and IPv6
 
 ## Getting Started
 
 ### Dependencies
 
 - This project was made with POSIX in mind and therefore is only supported for POSIX systems.
+
+<br />
 
 ### Installing
 
@@ -42,6 +44,8 @@ N_BUFFS=<number of bufferslots>
 
 > A provided example can be found in the `.env.dist` file in the root directory
 
+<br />
+
 ### Executing program
 
 #### Execute yourself without .env variables
@@ -67,6 +71,32 @@ $ make run
 ```
 
 > compiles as before but also runs the binary with the environment variables defined earlier, if these are not defined this rule will not work.
+
+<br />
+
+## Query server
+
+To query the server's endpoint you can use for example use `curl`:
+
+```shell
+$ curl http://localhost:8080/
+```
+
+> localhost will is a routeback to IPv4's loopback address 127.0.0.1 and IPv6's loopback address ::1
+
+You can also explixitly query the server with either IPv4 or IPv6 ip addresses.
+
+```shell
+$ curl http://127.0.0.1:8080/
+```
+
+> IPv4
+
+```shell
+$ curl http://\[::1\]:8080/
+```
+
+> IPv6, curl needs to escape the brackets to understand them "\[" and "\]"
 
 <br />
 <br />
