@@ -96,9 +96,12 @@ void handle_request(int connfd, int thread_no) {
   char* method = strtok(readbuffer, " \t\r\n");
   char* uri = strtok(NULL, " \t");
 
-  printf("%-5s %-10s \t Request handled by thread #%d \n\n", method, uri, thread_no);
-  handle_route(connfd, method, uri);
-
+  if (method == NULL || uri == NULL) 
+    printf("Unable to parse request in thread #%d \n\n", thread_no);
+  else {
+    printf("%-5s %-10s \t Request handled by thread #%d \n\n", method, uri, thread_no);
+    handle_route(connfd, method, uri);
+  }
   close(connfd);
 }
 

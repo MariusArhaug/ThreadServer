@@ -2,14 +2,13 @@
 
 SEQ=/bin/seq
 CURL=/bin/curl
-
 IP=localhost
 PORT=8080
 PATH=/doc/index.html
 
 URL=$IP:$PORT$PATH
 
-END=4
+END=10
 
 if [ -z "$1" ]
 then
@@ -20,8 +19,6 @@ fi
 
 for i in `$SEQ $END`
 do
-
-  echo "i:$i curl -S -s -o /dev/null $URL $err"
-  $CURL -S -s -o /dev/null $URL
-  
-done 
+  echo "i:$i curl -S -s -o /dev/null $URL"
+  $CURL -S -s -o /dev/null $URL &
+done

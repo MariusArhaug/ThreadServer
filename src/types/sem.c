@@ -18,31 +18,37 @@ SEM* sem_init(uint32_t initVal) {
     return NULL;
 
   memset(sem, 0, sizeof(struct SEM));
-  pthread_mutex_init(&sem->mutex, NULL);
-  pthread_cond_init(&sem->cond, NULL);
+  if (pthread_mutex_init(&sem->mutex, NULL) != 0) {
+    free(sem);
+    return NULL;
+  }
+  if (pthread_cond_init(&sem->cond, NULL) != 0) {
+    pthread_mutex_destroy(&sem->mutex);
+    free(sem);
+    return NULL;
+  }
+
   sem->n = initVal;
   return sem;
 }
 
 int sem_del(SEM* sem) {
   if(pthread_cond_destroy(&sem->cond) != 0) {
-    sem = NULL;
+    free(sem);
     return -1;
   }
   if(pthread_mutex_destroy(&sem->mutex) != 0) {
-    sem = NULL;
+    free(sem);
     return -1;
   }
   
   free(sem);
-
-  sem = NULL;
   return 0;
 }
 
 void P(SEM* sem) {
   pthread_mutex_lock(&sem->mutex);
-  ++(sem->n);
+  sem->n++;
   pthread_mutex_unlock(&sem->mutex);
   pthread_cond_signal(&sem->cond);
 }
@@ -51,6 +57,6 @@ void V(SEM* sem) {
   pthread_mutex_lock(&sem->mutex);
   while (sem->n == 0)
     pthread_cond_wait(&sem->cond, &sem->mutex);
-  --(sem->n);
+  sem->n--;
   pthread_mutex_unlock(&sem->mutex);
 }

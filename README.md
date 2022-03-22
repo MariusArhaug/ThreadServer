@@ -6,7 +6,7 @@ A multi threaded web server, serving HTTP 1.1 on _n_ threads using web sockets. 
 
 This web server was created as a part of the exercises in the course `TDT4186 Operating Systems` at NTNU in Trondheim, Norway.
 
-It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities.
+It supports both JSON and HTML response headers and is able to server multiple incomming requests at once due to its multithreaded capabilities. At this moment it only supports IPv4 because the IPv6 implementation suffered some wierd bugs not present when only using IPv4.
 
 ## Getting Started
 
@@ -98,13 +98,11 @@ $ curl localhost:8080/doc/index.html
 Where the server will respond with the file, in a http packet format.
 
 <br/>
-<br/>
 
 **b) Counting semaphores**.
 
 The second task was to create a semaphore interface that allows us to easily coordinate and interface with POSIX threads, this is acheived by using `pthread_mutex_lock(3)` and `pthread_cont_wait(3)` in the `src/types/sem.c` file.
 
-<br/>
 <br/>
 
 **c) Ring buffer**
@@ -112,7 +110,6 @@ A ring buffer was created to handle incomming file descriptors `"connfd"` from t
 
 The buffer then using the semaphores created in the previous task, to signal other waiting processes that something either has been added or removed from it.
 
-<br />
 <br />
 
 **d) Multithreaded server**
@@ -179,3 +176,7 @@ $ curl localhost:8080/src/main.c
 This would then return the contents of the `main.c` file, again something we might not want our server to do.
 
 To prevent this the `router.c` files handles valid routes that a client might want to reach out for. Currently only the `/doc/` endpoint is requested so that only files within that directory should be allowed to be sent back to the client.
+
+## Testing
+
+A simple curl script was made in the `scripts` directory to simulate multiple requests. It seems like it sends too many requests at one time causing the system to receive a bad file descriptor. Currently the server will shutdown if it encounters such a bad file descriptor.
