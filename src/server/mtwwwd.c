@@ -40,32 +40,53 @@ static int accept_conn(struct server_t* self) {
 }
 
 
+static int accept_conn_ipv6(struct server_t* self){
+  socklen_t clilen = sizeof(self->cli_addr_6);
+  int connfd = accept(
+    self->sockfd_ip6,
+    (struct sockaddr*) &self->cli_addr_6,
+    &clilen);
+  return connfd;
+}
+
 void server_init(struct server_t* self) {
   memset(self, 0, sizeof(struct server_t));
   memset(&self->serv_addr, 0, sizeof(struct sockaddr_in));
   memset(&self->cli_addr, 0, sizeof(struct sockaddr_in));
 
+  memset(&self->serv_addr_6, 0, sizeof(struct sockaddr_in6));
+  memset(&self->cli_addr_6, 0, sizeof(struct sockaddr_in6));
+
   self->sockfd = check(socket(AF_INET, SOCK_STREAM, 0), "Socket init failure");
+  self->sockfd_ip6 = check(socket(AF_INET6, SOCK_STREAM, 0), "Socket init failure");
 
   int reuseaddr = 1;
-  check(setsockopt(self->sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr)), "Set socket option failure");
+  check(setsockopt(self->sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr)), "Set socket (ipv4) option failure");
+  check(setsockopt(self->sockfd_ip6, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr)), "Set socket (ipv6) option failure");
 
+  // ipv4
   self->serv_addr.sin_family = AF_INET;
   self->serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   self->serv_addr.sin_port = htons(state.port);
   self->connection_size = CONNECTION_SIZE;
 
-  check(bind(self->sockfd, (struct sockaddr*) &self->serv_addr, sizeof(self->serv_addr)), "Bind failed");
+  // ipv6
+  self->serv_addr_6.sin6_family = AF_INET6;
+  self->serv_addr_6.sin6_addr = in6addr_any;
+  self->serv_addr_6.sin6_port = htons(state.port);
+
+  check(bind(self->sockfd_ip6, (struct sockaddr*) &self->serv_addr_6, sizeof(self->serv_addr_6)), "Bind failed!");
 }
 
 void server_start(struct server_t* self) {
-  check(listen(self->sockfd, self->connection_size), "Failed to listen");
+  check(listen(self->sockfd_ip6, self->connection_size), "Failed to listen");
   printf("Server listening on port: %d \n", state.port);
 
   if (state.is_multihreaded) {
     while(state.run) {
       fflush(stdout);
-      int connfd = accept_conn(self);
+      //int connfd = accept_conn(self);
+      int connfd = accept_conn_ipv6(self);
       if (connfd < 0)
         continue;
       bb_add(state.buffer, connfd);    
@@ -74,7 +95,8 @@ void server_start(struct server_t* self) {
   } 
  
   while(state.run) {
-    int connfd = accept_conn(self);
+    //int connfd = accept_conn(self);
+    int connfd = accept_conn_ipv6(self);
     if (connfd < 0)
       continue;
     handle_request(connfd, 1);
@@ -107,4 +129,5 @@ void handle_request(int connfd, int thread_no) {
 
 void server_destroy(struct server_t* self) {
   close(self->sockfd);
+  close(self->sockfd_ip6);
 }
